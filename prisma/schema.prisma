@@ -1,0 +1,240 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Enums ──
+
+enum Platform {
+  FACEBOOK
+  INSTAGRAM
+  REDDIT
+  YOUTUBE
+  LINKEDIN
+  X
+  TIKTOK
+}
+
+enum ConnectionStatus {
+  ACTIVE
+  EXPIRED
+  DISCONNECTED
+}
+
+enum TokenType {
+  SYSTEM_USER
+  LONG_LIVED
+  SHORT_LIVED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  CAROUSEL
+  REEL
+  STORY
+  TEXT
+}
+
+enum MediaStage {
+  LOCAL
+  UPLOADING
+  CDN
+}
+
+enum PostStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  FAILED
+  REJECTED
+}
+
+enum PostAction {
+  CREATED
+  EDITED
+  APPROVED
+  REJECTED
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+enum BrandSourceType {
+  WEBSITE_EXTRACTED
+  MANUAL
+}
+
+enum CalendarType {
+  EVERGREEN
+  SPECIAL_OCCASION
+}
+
+enum CalendarStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum OnboardingProvider {
+  META
+}
+
+enum OnboardingStatus {
+  STARTED
+  CALLBACK_RECEIVED
+  COMPLETED
+  FAILED
+}
+
+// ── Models ──
+
+model PlatformConnection {
+  id             String           @id @default(uuid()) @db.Uuid
+  platform       Platform
+  accountName    String
+  accountId      String
+  accessToken    String
+  tokenType      TokenType        @default(LONG_LIVED)
+  tokenExpiresAt DateTime?
+  metadata       Json?            // platform-specific config (page ID, IG account ID, etc.)
+  status         ConnectionStatus @default(ACTIVE)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@unique([platform, accountId])
+}
+
+model BrandProfile {
+  id           String          @id @default(uuid()) @db.Uuid
+  businessName String
+  websiteUrl   String?
+  brandColors  Json            // { primary: "#xxx", secondary: "#xxx", accent: "#xxx", ... }
+  fonts        Json?           // { heading: "...", body: "..." }
+  voiceTone    String          @db.Text // "Warm, approachable, slightly playful..."
+  offerings    String?         @db.Text // products/services description
+  logoUrl      String?
+  style        String?         @db.Text // overall visual style notes
+  sourceType   BrandSourceType @default(MANUAL)
+  rawAnalysis  Json?           // full website analysis output for reference
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  posts     Post[]
+  calendars ContentCalendar[]
+}
+
+model ContentCalendar {
+  id              String         @id @default(uuid()) @db.Uuid
+  brandProfileId  String         @db.Uuid
+  name            String         // "Valentine's Day 2026", "Weekly Evergreen"
+  type            CalendarType
+  occasionDate    DateTime?      // for special occasions
+  frequency       String?        // "3/week", "daily", etc. for evergreen
+  aiPromptContext String?        @db.Text // additional user instructions for this calendar
+  status          CalendarStatus @default(ACTIVE)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  brandProfile BrandProfile @relation(fields: [brandProfileId], references: [id], onDelete: Cascade)
+  posts        Post[]
+
+  @@index([brandProfileId])
+}
+
+model Post {
+  id                String     @id @default(uuid()) @db.Uuid
+  title             String?    // internal reference name
+  content           String     @db.Text // caption/text
+  mediaType         MediaType
+  mediaStage        MediaStage @default(LOCAL)
+  localMediaPaths   String[]   // local file paths before CDN upload
+  cdnMediaUrls      String[]   // Meta CDN URLs after upload
+  status            PostStatus @default(DRAFT)
+  platforms         Platform[] // which platforms to publish to
+  scheduledAt       DateTime?
+  publishedAt       DateTime?
+  approvedAt        DateTime?
+  rejectedAt        DateTime?
+  rejectionReason   String?    @db.Text
+  platformResults   Json?      // per-platform results: { instagram: { id, url }, facebook: { id, url } }
+  aiGenerated       Boolean    @default(true)
+  aiPrompt          String?    @db.Text // prompt used to generate this post
+  brandProfileId    String?    @db.Uuid
+  contentCalendarId String?    @db.Uuid
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  brandProfile    BrandProfile?    @relation(fields: [brandProfileId], references: [id], onDelete: SetNull)
+  contentCalendar ContentCalendar? @relation(fields: [contentCalendarId], references: [id], onDelete: SetNull)
+  logs            PostLog[]
+
+  @@index([status])
+  @@index([brandProfileId])
+  @@index([contentCalendarId])
+  @@index([scheduledAt])
+}
+
+model PostLog {
+  id        String     @id @default(uuid()) @db.Uuid
+  postId    String     @db.Uuid
+  action    PostAction
+  details   String?    @db.Text
+  createdAt DateTime   @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+}
+
+model PlatformOnboardingSession {
+  id                String             @id @default(cuid())
+  provider          OnboardingProvider
+  status            OnboardingStatus   @default(STARTED)
+  state             String             @unique
+  accessToken       String?
+  tokenExpiresAt    DateTime?
+  grantedPermissions String[]
+  deniedPermissions  String[]
+  metadata          Json?
+  error             String?
+  completedAt       DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  accounts      Account[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 280" role="img" aria-labelledby="logoTextTitle">
+  <title id="logoTextTitle">Aries AI logo with wordmark</title>
+  <rect width="280" height="280" rx="56" fill="#0a0f1e"/>
+  <path d="M52 166c0-58.5 47.5-106 106-106h12v32h-12c-40.8 0-74 33.2-74 74H52Z" fill="#3b82f6"/>
+  <path d="M228 166c0-58.5-47.5-106-106-106h-12v32h12c40.8 0 74 33.2 74 74h32Z" fill="#3b82f6"/>
+  <path d="M122 60h36v106h-36zM86 166h108v38H86z" fill="#f59e0b"/>
+  <text x="340" y="122" fill="#0a0f1e" font-family="'Space Grotesk', 'Avenir Next', 'Montserrat', sans-serif" font-size="92" font-weight="700" letter-spacing="8">ARIES</text>
+  <text x="340" y="220" fill="#3b82f6" font-family="'Space Grotesk', 'Avenir Next', 'Montserrat', sans-serif" font-size="92" font-weight="700" letter-spacing="8">AI</text>
+</svg>

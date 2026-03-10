@@ -1,0 +1,17 @@
+[Unit]
+Description=Aries AI - Social Media Marketing Automation
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/.openclaw/workspace/aries-ai
+ExecStart=/usr/bin/node /root/.openclaw/workspace/aries-ai/node_modules/.bin/next start --hostname 0.0.0.0 --port 3060
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=HOME=/root
+EnvironmentFile=-/root/.openclaw/workspace/.env
+EnvironmentFile=/root/.openclaw/workspace/aries-ai/.env
+
+[Install]
+WantedBy=multi-user.target

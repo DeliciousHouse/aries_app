@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">Aries AI Logo</title>
+  <desc id="logoDesc">Geometric ram horn emblem for Aries AI</desc>
+  <rect width="512" height="512" rx="96" fill="#0a0f1e" />
+  <path d="M96 304C96 201.4 179.4 118 282 118h22v64h-22c-67.3 0-122 54.7-122 122h-64Z" fill="#3b82f6"/>
+  <path d="M416 304C416 201.4 332.6 118 230 118h-22v64h22c67.3 0 122 54.7 122 122h64Z" fill="#3b82f6"/>
+  <path d="M230 118h52v204h-52V118Z" fill="#f59e0b"/>
+  <path d="M178 322h156v72H178z" fill="#f59e0b"/>
+  <path d="M256 176l46 146h-34l-12-39-12 39h-34l46-146Z" fill="#0a0f1e"/>
+</svg>

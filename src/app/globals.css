@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --color-bg: #0a0f1e;
+  --color-panel: rgba(255, 255, 255, 0.06);
+  --color-panel-border: rgba(255, 255, 255, 0.12);
+  --color-primary: #3b82f6;
+  --color-accent: #f59e0b;
+  --layout-max-width: 1120px;
+  --layout-gap: clamp(1.25rem, 1.8vw, 1.9rem);
+}
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+}
+
+* {
+  box-sizing: border-box;
+  border-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: #f8fafc;
+  font-family: var(--font-body), sans-serif;
+  line-height: 1.5;
+}
+
+.font-heading {
+  font-family: var(--font-heading), sans-serif;
+}
+
+.glass-card {
+  border: 1px solid var(--color-panel-border);
+  background: var(--color-panel);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+}
+
+.page-grid {
+  display: grid;
+  gap: var(--layout-gap);
+  align-content: start;
+}
+
+.page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--layout-gap);
+}
+
+.app-content {
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+}

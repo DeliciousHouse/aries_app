@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="ogTitle ogDesc">
+  <title id="ogTitle">Aries AI Open Graph Image</title>
+  <desc id="ogDesc">Aries AI brand card with ram emblem and tagline</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0f1e"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <g transform="translate(430,110)">
+    <rect width="340" height="340" rx="68" fill="#0a0f1e"/>
+    <path d="M64 206c0-71.8 58.2-130 130-130h14v40h-14c-49.7 0-90 40.3-90 90H64Z" fill="#3b82f6"/>
+    <path d="M276 206c0-71.8-58.2-130-130-130h-14v40h14c49.7 0 90 40.3 90 90h40Z" fill="#3b82f6"/>
+    <path d="M146 76h48v130h-48zM98 206h144v50H98z" fill="#f59e0b"/>
+  </g>
+
+  <text x="600" y="500" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', 'Avenir Next', 'Montserrat', sans-serif" font-size="58" font-weight="700" letter-spacing="4">ARIES AI</text>
+  <text x="600" y="552" text-anchor="middle" fill="#dbeafe" font-family="'Space Grotesk', 'Avenir Next', 'Montserrat', sans-serif" font-size="34" font-weight="500">Your AI Marketing Team</text>
+  <text x="600" y="595" text-anchor="middle" fill="#93c5fd" font-family="'Space Grotesk', 'Avenir Next', 'Montserrat', sans-serif" font-size="20" font-weight="500" letter-spacing="1.5">by Sugar and Leather</text>
+</svg>

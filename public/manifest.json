@@ -1,0 +1,12 @@
+{
+  "name": "Aries AI",
+  "short_name": "Aries AI",
+  "description": "AI-powered social media marketing automation",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0a0f1e",
+  "background_color": "#0a0f1e",
+  "icons": [
+    { "src": "/brand/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

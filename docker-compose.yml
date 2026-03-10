@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aries_ai
+      POSTGRES_USER: aries
+      POSTGRES_PASSWORD: aries_secure_pwd_2026
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aries -d aries_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://aries:aries_secure_pwd_2026@postgres:5432/aries_ai"
+      NODE_ENV: production
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-change-me}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3060}
+      AUTH_TRUST_HOST: "true"
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-owner@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me}
+      ADMIN_NAME: ${ADMIN_NAME:-Owner}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_TEXT_MODEL: ${GEMINI_TEXT_MODEL:-gemini-1.5-flash}
+      META_ACCESS_TOKEN: ${META_ACCESS_TOKEN:-}
+      META_PAGE_ID: ${META_PAGE_ID:-}
+      META_AD_ACCOUNT_ID: ${META_AD_ACCOUNT_ID:-}
+      META_APP_ID: ${META_APP_ID:-}
+      META_APP_SECRET: ${META_APP_SECRET:-}
+      INSTAGRAM_ACCOUNT_ID: ${INSTAGRAM_ACCOUNT_ID:-}
+      MEDIA_PUBLIC_BASE_URL: ${MEDIA_PUBLIC_BASE_URL:-}
+      PLATFORM_BRAND_NAME: ${PLATFORM_BRAND_NAME:-}
+      FACEBOOK_ACCOUNT_NAME: ${FACEBOOK_ACCOUNT_NAME:-}
+      INSTAGRAM_ACCOUNT_NAME: ${INSTAGRAM_ACCOUNT_NAME:-}
+      PLATFORM_TOKEN_TTL_DAYS: ${PLATFORM_TOKEN_TTL_DAYS:-60}
+      PLATFORM_ENV_SYNC_ENABLED: ${PLATFORM_ENV_SYNC_ENABLED:-false}
+    ports:
+      - "${APP_PORT:-3060}:3060"
+    networks:
+      - default
+      - shared_webnet
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgresql://aries:aries_secure_pwd_2026@postgres:5432/aries_ai"
+    command: ["npx", "prisma", "db", "push", "--schema", "prisma/schema.prisma"]
+    restart: "no"
+    networks:
+      - default
+
+volumes:
+  pgdata:
+
+networks:
+  shared_webnet:
+    external: true
